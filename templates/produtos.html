@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>produto</th>
+        <th>descricao</th>
+        <th>marca</th>
+        <th>preco_custo</th>
+        <th>preco_venda</th>
+        <th>imagem</th>
+        <th>embalagens</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    function delet(val){
+      var formData = new FormData();
+      formData.append("delet", val);
+      $.ajax({
+        type: 'post',
+        url: '/api/editdata',
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        sucess: function(data){alert(data);},
+        error: function(errMsg){
+          alert(errMsg);
+        }
+      });
+    }
+    $(document).ready(function () {
+      let table = $('#data').DataTable({
+        "language": {
+            "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json"
+        },
+        ajax: '/api/data',
+        columns: [
+          {data: 'id'},
+          {data: 'produto'},
+          {data: 'descricao'},
+          {data: 'marca'},
+          {data: 'preco_custo'},
+          {data: 'preco_venda'},
+          {data: 'imagem'},
+          {data: 'embalagens'},
+          {"defaultContent": "<button id='edit-btn' class='btn btn-warning'>Editar</button>"},
+          {"defaultContent": "<button id='del-btn' class='btn btn-warning'>Apagar</button>"}
+        ],
+      });
+      $('#data tbody').on('click', "#del-btn", function() {
+            let row = $(this).parents('tr')[0];
+            DelId = table.row(row).data().id;
+            console.log(DelId);
+            delet(DelId);
+            location.reload();
+        });
+        $('#data tbody').on('click', "#edit-btn", function() {
+            let row = $(this).parents('tr')[0];
+            EditId = table.row(row).data().id;
+            console.log(EditId);
+            window.location.replace("/editar?id="+EditId);
+
+        });
+    });
+  </script>
+{% endblock %}

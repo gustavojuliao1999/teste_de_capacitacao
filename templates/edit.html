@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="contact-form">
+  <h1>Editar de Produto</h1>
+  <p>Preencha todas as tabelas</p>
+
+  <form>
+    <div class="input-group">
+      <label for="name">ID</label>
+      <input name="id" id="id" type="hidden" value=""/>
+    </div>
+    <div class="input-group">
+      <label for="name">Nome Produto</label>
+      <input id="produto" name="produto" type="text"/>
+    </div>
+    <div class="input-group">
+      <label for="name">Descrição</label>
+      <textarea id="descricao" name="descricao" type="text" rows="4" cols="65"></textarea>
+    </div>
+
+    <div class="input-group">
+      <label for="name">Marca</label>
+      <input id="marca" name="marca" type="text"/>
+    </div>
+
+    <div class="input-group">
+      <label for="name">Preço de Custo</label>
+      <input id="preco_custo" name="preco_custo" type="text"/>
+    </div>
+
+    <div class="input-group">
+      <label for="name">Preço de Venda</label>
+      <input id="preco_venda" name="preco_venda" type="text"/>
+    </div>
+    <div class="input-group">
+      <label for="name">Arquivo de Imagem</label>
+      <input id="imagem" name="imagem" type="file"/>
+    </div>
+    <div class="input-group">
+      <label for="name">embalagens:  </label>
+      <select id="embalagens" name="embalagens" aria-controls="data" class="form-select form-select-sm">
+        <option value="UN">Unidade</option>
+        <option value="CX">Caixa</option>
+        <option value="KG">Kilograma</option>
+        <option value="PT">Palete</option>
+      </select>
+    </div>
+    <button type="submit">Salvar</button>
+  </form>
+</section>
+
+<div class="results">
+  <h2>Form Data</h2>
+  <pre></pre>
+</div>
+
+<script>
+function query_string(variable)
+{
+   var query = window.location.search.substring(1);
+   var vars = query.split("&");
+   for (var i=0;i<vars.length;i++) {
+           var pair = vars[i].split("=");
+           if(pair[0] == variable){return pair[1];}
+   }
+   return(false);
+}
+$(document).ready(
+	function () {
+		$.ajax({
+		    dataType: "json",
+			url: '/api/editdata',
+			type: 'GET',
+			data: {
+				id: query_string('id')
+			},
+			success: function (data) {
+			    data = data['data'][0];
+			    $('input[name=id]').val(data['id']);
+				$('input[name=produto]').val(data['produto']);
+				$('textarea[name=descricao]').val(data['descricao']);
+				$('input[name=marca]').val(data['marca']);
+				$('input[name=preco_custo]').val(data['preco_custo']);
+				$('input[name=preco_venda]').val(data['preco_venda']);
+				$('select[name=embalagens]').val(data['embalagens']);
+				$('input[name=imagem]').val(data['imagem']);
+
+			}
+		});
+
+	});
+
+
+function handleFormSubmit(event) {
+  var Img = $('input[name="imagem"]').get(0).files[0];
+  event.preventDefault();
+
+  const data = new FormData(event.target);
+
+  const formJSON = Object.fromEntries(data.entries());
+
+  data.append('img', Img);
+  const results = document.querySelector('.results pre');
+  //results.innerText = JSON.stringify(formJSON, null, 2);
+  var formData = new FormData();
+  formData.append("file", Img);
+  formData.append("data", JSON.stringify(formJSON));
+  results.innerText = formData;
+  $.ajax({
+    type: 'post',
+    url: '/api/editdata',
+    data: formData,
+    contentType: false,
+    processData: false,
+    datatype: 'formData',
+    dataType: "json",
+    sucess: function(data){alert("Salvo com sucesso");},
+    error: function(errMsg){
+      alert("Erro ao salvar");
+    }
+  });
+}
+
+const form = document.querySelector('.contact-form');
+form.addEventListener('submit', handleFormSubmit);
+</script>
+{% endblock %}
