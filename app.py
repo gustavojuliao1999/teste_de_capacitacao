@@ -53,7 +53,7 @@ def produtos():
 
 @app.route('/editar', methods=['GET'])
 def editar():
-    return render_template('edit.html', title='Cadastro')
+    return render_template('edit.html', title='Editar')
 
 @app.route('/cadastro')
 def cadastro():

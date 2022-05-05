@@ -36,30 +36,19 @@
 
     <div class="input-group">
       <label for="name">embalagens:  </label>
-
-      <input id="embalagens" name="embalagens" type="radio" value="UN" checked/>
-      <label class="inline" for="embalagens">UN</label>
-
-      <input id="embalagens" name="embalagens" type="radio" value="CX"/>
-      <label class="inline" for="embalagens">CX</label>
-
-      <input id="embalagens" name="embalagens" type="radio" value="KG"/>
-      <label class="inline" for="embalagens">KG</label>
-
-      <input id="embalagens" name="embalagens" type="radio" value="PT"/>
-      <label class="inline" for="embalagens">PT</label>
+      <select id="embalagens" name="embalagens" aria-controls="data" class="form-select form-select-sm">
+        <option value="UN">Unidade</option>
+        <option value="CX">Caixa</option>
+        <option value="KG">Kilograma</option>
+        <option value="PT">Palete</option>
+      </select>
     </div>
-
-
     <input name="secret" type="hidden" value="1b3a9374-1a8e-434e-90ab-21aa7b9b80e7"/>
     <button type="submit">Salvar</button>
   </form>
 </section>
 
-<div class="results">
-  <h2>Form Data</h2>
-  <pre></pre>
-</div>
+
 <script>
 function handleFormSubmit(event) {
   var Img = $('input[name="imagem"]').get(0).files[0];
@@ -70,12 +59,9 @@ function handleFormSubmit(event) {
   const formJSON = Object.fromEntries(data.entries());
 
   data.append('img', Img);
-  const results = document.querySelector('.results pre');
-  //results.innerText = JSON.stringify(formJSON, null, 2);
   var formData = new FormData();
   formData.append("file", Img);
   formData.append("data", JSON.stringify(formJSON));
-  results.innerText = formData;
   $.ajax({
     type: 'post',
     url: '/api/editdata',

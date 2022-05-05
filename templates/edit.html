@@ -50,10 +50,6 @@
   </form>
 </section>
 
-<div class="results">
-  <h2>Form Data</h2>
-  <pre></pre>
-</div>
 
 <script>
 function query_string(variable)
@@ -101,12 +97,9 @@ function handleFormSubmit(event) {
   const formJSON = Object.fromEntries(data.entries());
 
   data.append('img', Img);
-  const results = document.querySelector('.results pre');
-  //results.innerText = JSON.stringify(formJSON, null, 2);
   var formData = new FormData();
   formData.append("file", Img);
   formData.append("data", JSON.stringify(formJSON));
-  results.innerText = formData;
   $.ajax({
     type: 'post',
     url: '/api/editdata',
