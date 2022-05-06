@@ -43,6 +43,8 @@
         <option value="PT">Palete</option>
       </select>
     </div>
+
+
     <input name="secret" type="hidden" value="1b3a9374-1a8e-434e-90ab-21aa7b9b80e7"/>
     <button type="submit">Salvar</button>
   </form>
@@ -64,17 +66,20 @@ function handleFormSubmit(event) {
   formData.append("data", JSON.stringify(formJSON));
   $.ajax({
     type: 'post',
-    url: '/api/editdata',
+    url: '/api/savedata',
     data: formData,
     contentType: false,
     processData: false,
     datatype: 'formData',
     dataType: "json",
-    sucess: function(data){alert("Salvo com sucesso");},
+    sucess: function(){alert("Salvo com sucesso");},
     error: function(errMsg){
       alert("Erro ao salvar");
     }
   });
+   $(document).ajaxSuccess(function(){
+      alert("Salvo com Sucesso");
+    });
 }
 
 const form = document.querySelector('.contact-form');

@@ -14,6 +14,7 @@
         <th>embalagens</th>
         <th></th>
         <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -38,6 +39,9 @@
           alert(errMsg);
         }
       });
+       $(document).ajaxSuccess(function(){
+           alert("Apagado com Sucesso");
+       });
     }
     $(document).ready(function () {
       let table = $('#data').DataTable({
@@ -54,8 +58,9 @@
           {data: 'preco_venda'},
           {data: 'imagem'},
           {data: 'embalagens'},
-          {"defaultContent": "<button id='edit-btn' class='btn btn-warning'>Editar</button>"},
-          {"defaultContent": "<button id='del-btn' class='btn btn-warning'>Apagar</button>"}
+          {data: 'thumb', orderable: false, searchable: false},
+          {"defaultContent": "<button id='edit-btn' class='btn btn-warning'>Editar</button>", orderable: false, searchable: false},
+          {"defaultContent": "<button id='del-btn' class='btn btn-warning'>Apagar</button>", orderable: false, searchable: false}
         ],
       });
       $('#data tbody').on('click', "#del-btn", function() {

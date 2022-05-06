@@ -35,6 +35,8 @@
     </div>
     <div class="input-group">
       <label for="name">Arquivo de Imagem</label>
+      <div id="img" name="img">
+      </div>
       <input id="imagem" name="imagem" type="file"/>
     </div>
     <div class="input-group">
@@ -80,8 +82,7 @@ $(document).ready(
 				$('input[name=preco_custo]').val(data['preco_custo']);
 				$('input[name=preco_venda]').val(data['preco_venda']);
 				$('select[name=embalagens]').val(data['embalagens']);
-				$('input[name=imagem]').val(data['imagem']);
-
+				$('div[name=img]').append('<img src="data:image/png;base64,'+data['img']+'" alt="img" style="width: 100%;">');
 			}
 		});
 
@@ -108,12 +109,19 @@ function handleFormSubmit(event) {
     processData: false,
     datatype: 'formData',
     dataType: "json",
-    sucess: function(data){alert("Salvo com sucesso");},
+    sucess: function(){
+        alert("Salvo com sucesso");
+    },
     error: function(errMsg){
       alert("Erro ao salvar");
     }
   });
+  $(document).ajaxSuccess(function(){
+      alert("Salvo com Sucesso");
+    });
+
 }
+
 
 const form = document.querySelector('.contact-form');
 form.addEventListener('submit', handleFormSubmit);
