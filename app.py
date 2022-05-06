@@ -162,7 +162,11 @@ def editdata():
                'preco_venda',
                'embalagens']
         for x in arr:
+
             val = str(data[x])
+            if (x == 'embalagens'):
+                if (val == "OT"):
+                    val = data["emb_outro"]
             print(data['id'])
             if val == "" or val == None or val == "{}" or val == "[]":
                 print(x + "está vazio")
@@ -205,6 +209,9 @@ def save():
             print("Pic not Exist")
             filename = None
             rpic = None
+        if (data['embalagens'] == "OT"):
+            data['embalagens'] = data["emb_outro"]
+        print(data['id'])
         produto = Produtos(produto=str(data['produto']),
                            descricao=str(data['descricao']),
                            marca=str(data['marca']),
