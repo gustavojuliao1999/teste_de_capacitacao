@@ -5,19 +5,15 @@
 
 
 import io
-from flask import Flask, render_template, request, jsonify, current_app as app, send_file
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import BYTEA
-from sqlalchemy.orm import defer
 from werkzeug.utils import secure_filename
 import json
 import base64
-import codecs
 from base64 import b64encode
 from PIL import Image
-import os
 import PIL
-import glob
 
 # In[2]:
 
