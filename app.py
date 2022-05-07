@@ -70,6 +70,23 @@ class Produtos(db.Model):
 # In[4]:
 
 
+emb_types = ["UN", "KG", "PL", "CX"]
+
+
+def types():
+    global emb_types
+    for produtos in Produtos.query:
+        var = produtos.to_dict()
+        if (var['embalagens'] not in emb_types):
+            emb_types.append(var['embalagens'])
+
+
+types()
+
+
+# In[5]:
+
+
 def convert_image(base64_str):
     buffer = io.BytesIO()
     imgdata = base64.b64decode(str(b64encode(base64_str), 'utf-8'))
@@ -90,7 +107,7 @@ def convert_image(base64_str):
     return ret
 
 
-# In[5]:
+# In[6]:
 
 
 @app.route('/')
@@ -98,7 +115,7 @@ def index():
     return render_template('inicio.html', title='Inicio')
 
 
-# In[6]:
+# In[7]:
 
 
 @app.route('/produtos')
@@ -106,7 +123,7 @@ def produtos():
     return render_template('produtos.html', title='Produtos')
 
 
-# In[7]:
+# In[8]:
 
 
 @app.route('/editar', methods=['GET'])
@@ -114,7 +131,7 @@ def editar():
     return render_template('edit.html', title='Editar')
 
 
-# In[8]:
+# In[9]:
 
 
 @app.route('/cadastro')
@@ -122,14 +139,17 @@ def cadastro():
     return render_template('cadastro.html', title='Cadastro')
 
 
-# In[9]:
+# In[10]:
 
 
 @app.route('/api/editdata', methods=['POST', 'GET'])
 def editdata():
+    global emb_types
     if request.method == 'GET':
         vid = request.args.get('id')
-        rtn = {'data': [Produtos.query.get(vid).to_dict()]}
+        val = Produtos.query.get(vid).to_dict()
+        val["tembalagens"] = emb_types
+        rtn = {'data': [val]}
         return rtn
     if request.method == 'POST':
         try:
@@ -165,7 +185,7 @@ def editdata():
 
             val = str(data[x])
             if (x == 'embalagens'):
-                if (val == "OT"):
+                if (data['emb_outro'] != ""):
                     val = data["emb_outro"]
             print(data['id'])
             if val == "" or val == None or val == "{}" or val == "[]":
@@ -174,24 +194,28 @@ def editdata():
             else:
                 result = Produtos.query.filter(Produtos.id == int(data['id'])).update({x: val})
         db.session.commit()
+        types()
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
-# In[10]:
+# In[11]:
 
 
 @app.route('/api/data')
 def data():
+    global emb_types
     # rtn = {'data': [produtos.to_dict() for produtos in Produtos.query]}
     prod = {'data': []}
     for produtos in Produtos.query:
         var = produtos.to_dict()
         var["img"] = ""
         prod['data'].append(var)
+    prod["tembalagens"] = emb_types
+    types()
     return prod
 
 
-# In[11]:
+# In[12]:
 
 
 @app.route('/api/savedata', methods=['POST'])
@@ -209,8 +233,10 @@ def save():
             print("Pic not Exist")
             filename = None
             rpic = None
-        if (data['embalagens'] == "OT"):
-            data['embalagens'] = data["emb_outro"]
+
+        emb = data['embalagens']
+        if (data['emb_outro'] != ""):
+            emb = data["emb_outro"]
         print(data['id'])
         produto = Produtos(produto=str(data['produto']),
                            descricao=str(data['descricao']),
@@ -218,7 +244,7 @@ def save():
                            preco_custo=data['preco_custo'].replace(',', '.'),
                            preco_venda=data['preco_venda'].replace(',', '.'),
                            imagem=str(filename),
-                           embalagens=str(data['embalagens']),
+                           embalagens=str(emb),
                            img=rpic,
                            thumb=convert_image(rpic)
                            )

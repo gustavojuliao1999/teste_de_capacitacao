@@ -42,11 +42,6 @@
     <div class="input-group">
       <label for="name">embalagens:  </label>
       <select id="embalagens" name="embalagens" aria-controls="data" class="form-select form-select-sm">
-        <option value="UN">Unidade</option>
-        <option value="CX">Caixa</option>
-        <option value="KG">Kilograma</option>
-        <option value="PT">Palete</option>
-        <option value="OT">Outro</option>
       </select>
     </div>
     <div class="input-group">
@@ -85,6 +80,12 @@ $(document).ready(
 				$('input[name=marca]').val(data['marca']);
 				$('input[name=preco_custo]').val(data['preco_custo']);
 				$('input[name=preco_venda]').val(data['preco_venda']);
+                var array = data['tembalagens'];
+                if (array != ''){
+                    for (i in array) {
+                        $('select[name=embalagens]').append('<option value="'+array[i]+'">'+array[i]+'</option>');
+                    }
+                }
 				$('select[name=embalagens]').val(data['embalagens']);
 				$('div[name=img]').append('<img src="data:image/png;base64,'+data['img']+'" alt="img" style="width: 100%;">');
 			}
